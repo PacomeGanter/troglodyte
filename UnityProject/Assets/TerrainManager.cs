@@ -12,6 +12,8 @@ public class TerrainManager : MonoBehaviour
     public float Deepness;
     [Range(1, 10)]
     public float terrainMaxHeight;
+    [Range(1, 32)]
+    public int radius;
     Terrain terrain;
     void Start()
     {
@@ -41,12 +43,29 @@ public class TerrainManager : MonoBehaviour
             float[,] heights = terrain.terrainData.GetHeights(0, 0, xBase, yBase);
             // to make the brush size bigger, you need to make a for loop that goes from
             // a min range to a max range based on the mappedMouse
-            heights[(int)mappedMouse.x, (int)mappedMouse.y] = Deepness;
+
+            List<Vector2> points = new List<Vector2>();
+            for (int x = 0; x < xBase; x++)
+            {
+                for (int y = 0; y < yBase; y++)
+                {
+                    if (Vector2.Distance(new Vector2(x, y), mappedMouse) < radius)
+                    {
+                        points.Add(new Vector2(x, y));
+                    } 
+                }
+            }
+            for (int i=0;i<points.Count;i++)
+            {
+                heights[(int)points[i].x, (int)points[i].y] = Deepness;
+            }
+            //heights[(int)mappedMouse.x, (int)mappedMouse.y] = Deepness;
             terrain.terrainData.SetHeights(0,0,heights);
         }
 
     }
 
+    
 
 
     TerrainData GetTerrainData(TerrainData terrainData )
