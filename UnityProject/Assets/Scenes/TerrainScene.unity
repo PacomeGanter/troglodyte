@@ -239,8 +239,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale: 5000
-  Deepness: 0
+  Deepness: 0.054
   terrainMaxHeight: 5
+  radius: 1
 --- !u!154 &1433480168
 TerrainCollider:
   m_ObjectHideFlags: 0

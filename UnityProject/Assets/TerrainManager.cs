@@ -8,7 +8,7 @@ public class TerrainManager : MonoBehaviour
     int xBase,yBase;
     [Range(1,5000)]
     public float scale;
-    [Range(0, 1)]
+    [Range(0, 0.2f)]
     public float Deepness;
     [Range(1, 10)]
     public float terrainMaxHeight;
@@ -37,36 +37,39 @@ public class TerrainManager : MonoBehaviour
         mappedMouse.x = Mathf.Clamp(mappedMouse.x, 0, xBase-1);
         mappedMouse.y = Mathf.Clamp(mappedMouse.y, 0, yBase-1);
 
+        // this only happens when we press mouse left button
         if (Input.GetMouseButton(0))
         {
             Debug.Log(mappedMouse);
+
             float[,] heights = terrain.terrainData.GetHeights(0, 0, xBase, yBase);
-            // to make the brush size bigger, you need to make a for loop that goes from
-            // a min range to a max range based on the mappedMouse
 
             List<Vector2> points = new List<Vector2>();
-            for (int x = 0; x < xBase; x++)
+
+            // here we are doing a nested for loop because we need to access all the points
+            // to measure the distance of each one to the origing (which is the current mouse pos)
+            for (int x = 0; x < xBase - 1; x++)
             {
-                for (int y = 0; y < yBase; y++)
+                for (int y = 0;y < yBase -1; y++)
                 {
-                    if (Vector2.Distance(new Vector2(x, y), mappedMouse) < radius)
+                    Vector2 currentPoint = new Vector2(x, y);
+
+                    if (Vector2.Distance(mappedMouse, currentPoint) < radius)
                     {
-                        points.Add(new Vector2(x, y));
-                    } 
+                        points.Add(currentPoint);
+                    }
                 }
             }
-            for (int i=0;i<points.Count;i++)
+
+            for (int i = 0; i < points.Count; i++)
             {
-                heights[(int)points[i].x, (int)points[i].y] = Deepness;
+                heights[(int)points[i].x, (int)points[i].y] -= Deepness;
             }
-            //heights[(int)mappedMouse.x, (int)mappedMouse.y] = Deepness;
+            
             terrain.terrainData.SetHeights(0,0,heights);
         }
 
     }
-
-    
-
 
     TerrainData GetTerrainData(TerrainData terrainData )
     {
