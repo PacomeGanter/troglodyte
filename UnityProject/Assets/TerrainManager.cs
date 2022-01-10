@@ -48,7 +48,7 @@ public class TerrainManager : MonoBehaviour
             // if pressed
             if (Input.GetMouseButton(i))
             {
-                terrain.heightmapPixelError = basePixelError * 5;
+                terrain.heightmapPixelError = basePixelError * 2;
                 Paint(mappedMouse, radius[i]);
             }
             // if released
