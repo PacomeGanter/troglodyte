@@ -9,22 +9,30 @@ public class TerrainManager : MonoBehaviour
     [Range(1,5000)]
     public float scale;
     [Range(0, 0.2f)]
-    public float Deepness;
-    [Range(1, 10)]
-    public float terrainMaxHeight;
+    public float DigForce;
+    public int baseSize = 256;
+    [Range(1, 50)]
+    public int terrainMaxHeight;
     [Range(1, 32)]
     public int[] radius;
     Terrain terrain;
     float basePixelError = 1f;
-
-    void Start()
+    float cameraY = 0;
+    public Material terrainMaterial;
+    void Awake()
     {
         terrain = GetComponent<Terrain>();
-        terrain.terrainData = GetTerrainData(terrain.terrainData);
-        Vector3 terrainSize = terrain.terrainData.size;
-        terrainSize.y = terrainMaxHeight;
+        terrain.terrainData = new TerrainData();
+        terrain.terrainData.heightmapResolution = baseSize;
+        terrain.terrainData.SetDetailResolution(baseSize,32);
+        terrain.terrainData.baseMapResolution = baseSize;
+        terrain.terrainData.alphamapResolution = baseSize;
+        Vector3 terrainSize = new Vector3(baseSize, terrainMaxHeight, baseSize);
         terrain.terrainData.size = terrainSize;
-        terrain.heightmapPixelError = basePixelError;
+        terrainMaterial.SetFloat(Shader.PropertyToID("_TerrainHeight"), terrainMaxHeight);
+        Transform camera = transform.GetChild(0);
+        camera.position = new Vector3(baseSize * 0.5f, baseSize - baseSize*0.1f, baseSize * 0.5f);
+        GetTerrainData(terrain.terrainData);
     }
 
 
@@ -33,12 +41,13 @@ public class TerrainManager : MonoBehaviour
         Vector2 mouse = Input.mousePosition;
 
         Vector2 mappedMouse = new Vector2(0, 0);
-
+        
         mappedMouse.x = Map(Screen.width, 0, 0, xBase, mouse.x);
         mappedMouse.y = Map(0, Screen.height, 0, yBase, mouse.y);
 
         mappedMouse.x = Mathf.Clamp(mappedMouse.x, 0, xBase-1);
         mappedMouse.y = Mathf.Clamp(mappedMouse.y, 0, yBase-1);
+
 
         // check for all buttons, 
         // if they are clicked we set pixel error to 5 and start painting
@@ -50,13 +59,14 @@ public class TerrainManager : MonoBehaviour
             {
                 terrain.heightmapPixelError = basePixelError * 2;
                 Paint(mappedMouse, radius[i]);
+                Debug.Log(mappedMouse);
             }
             // if released
             if (Input.GetMouseButtonUp(i))
             {
                 terrain.heightmapPixelError = basePixelError;
             }
-
+            
         }
 
         // this will save the image to app/screenshots and clean the terrain
@@ -68,12 +78,12 @@ public class TerrainManager : MonoBehaviour
 
     }
 
-    TerrainData GetTerrainData(TerrainData terrainData )
+    void GetTerrainData(TerrainData terrainData )
     {
         xBase = terrainData.heightmapResolution;
         yBase = terrainData.heightmapResolution;
 
-        terrainData.size = new Vector3(xBase, 1, yBase);
+        terrainData.size = new Vector3(xBase, terrainMaxHeight, yBase);
         Debug.Log(xBase + ", " + yBase);
 
         float[,] z = new float[xBase, yBase];
@@ -82,11 +92,10 @@ public class TerrainManager : MonoBehaviour
         {
             for (int y = 0; y < yBase; y++)
             {
-                z[x, y] = 1; //CalculateHeight(x,y); 
+                z[x, y] = 1;
             }
         }
         terrainData.SetHeights(0, 0, z);
-        return terrainData;
     }
 
     float CalculateHeight(float x,float y)
@@ -109,7 +118,7 @@ public class TerrainManager : MonoBehaviour
         float[,] heights = terrain.terrainData.GetHeights(0, 0, xBase, yBase);
 
         List<Vector2> points = new List<Vector2>();
-
+        
         // here we are doing a nested for loop because we need to access all the points
         // to measure the distance of each one to the origing (which is the current mouse pos)
         for (int x = 0; x < xBase - 1; x++)
@@ -127,7 +136,7 @@ public class TerrainManager : MonoBehaviour
 
         for (int i = 0; i < points.Count; i++)
         {
-            heights[(int)points[i].x, (int)points[i].y] -= Deepness;
+            heights[(int)points[i].x, (int)points[i].y] -= DigForce;
         }
 
         terrain.terrainData.SetHeights(0, 0, heights);
