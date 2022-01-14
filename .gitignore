@@ -69,17 +69,4 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-NeurovirtUnity/Packages/packages-lock.json
-NeurovirtUnity/Packages/packages-lock.json
-NeurovirtUnity/Assets/Bakery
-NeurovirtUnity/ProjectSettings
-NeurovirtUnity/Assets/Bakery.meta
-NeurovirtUnity/Assets/Downloads/SimpleNaturePack/SimpleNaturePack_HDRP_2018.3.unitypackage.meta
-NeurovirtUnity/Assets/Downloads/SimpleNaturePack/SimpleNaturePack_LWRP_2018.3.unitypackage.meta
-NeurovirtUnity/Assets/Downloads/SimpleNaturePack/SimpleNaturePack_URP_2019.3.unitypackage.meta
-NeurovirtUnity/Assets/PlayFabEditorExtensions/Editor/Resources/PlayFabEditorPrefsSO.asset
-NeurovirtUnity/Assets/PlayFabEditorExtensions/Editor/Resources/PlayFabUnitySdk.unitypackage.meta
-NeurovirtUnity/Packages/packages-lock.json
-NeurovirtUnity/Packages/packages-lock.json
-NeurovirtUnity/Assets/PlayFabEditorExtensions/Editor/Resources/PlayFabEditorPrefsSO.asset
-NeurovirtUnity/ProjectSettings/ProjectVersion.txt
+
